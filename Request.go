@@ -24,16 +24,16 @@ const (
 var (
 	transport = &http.Transport{
 		// 设置最大空闲连接数
-		MaxIdleConns: 1000, // 设置足够大的值来应对高并发
+		MaxIdleConns: 5000, // 设置足够大的值来应对高并发
 
 		// 设置每个主机的最大空闲连接数
-		MaxIdleConnsPerHost: 200, // 每个主机的空闲连接数
+		MaxIdleConnsPerHost: 1000, // 每个主机的空闲连接数
 
 		// 空闲连接的超时时间
 		IdleConnTimeout: 90 * time.Second, // 可以根据需要调整
 
 		// 设置最大空闲连接等待时间
-		MaxConnsPerHost: 500, // 每个主机的最大并发连接数
+		MaxConnsPerHost: 200, // 每个主机的最大并发连接数
 
 		// 连接建立超时时间
 		DialContext: (&net.Dialer{
