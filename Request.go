@@ -2,6 +2,7 @@ package requests
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/goantor/x"
@@ -148,7 +149,10 @@ func Json(url string, params x.H, header http.Header, duration time.Duration) (*
 }
 
 func do(method MethodType, contentType ContentType, url string, params x.H, header http.Header, duration time.Duration) (resp *http.Response, err error) {
-	req, err := makeRequest(method, contentType, url, params)
+	ctx, cancel := context.WithTimeout(context.Background(), duration)
+	defer cancel()
+
+	req, err := makeRequest(ctx, method, contentType, url, params)
 	if err != nil {
 		return
 	}
@@ -164,8 +168,8 @@ func do(method MethodType, contentType ContentType, url string, params x.H, head
 	return clientPool.Do(req)
 }
 
-func makeRequest(method MethodType, typ ContentType, url string, params x.H) (*http.Request, error) {
-	return http.NewRequest(string(method), url, getData(typ, params))
+func makeRequest(ctx context.Context, method MethodType, typ ContentType, url string, params x.H) (*http.Request, error) {
+	return http.NewRequestWithContext(ctx, string(method), url, getData(typ, params))
 }
 
 func getData(typ ContentType, params x.H) io.Reader {
