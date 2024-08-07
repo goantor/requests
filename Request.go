@@ -60,6 +60,7 @@ var (
 
 	clientPool = &http.Client{
 		Transport: transport,
+		Timeout:   30 * time.Second,
 	}
 )
 
